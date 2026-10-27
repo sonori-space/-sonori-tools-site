@@ -1,0 +1,188 @@
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123d32">
+<title>ضغط الصور مجانًا | Sonori Tools</title>
+<meta name="description" content="أداة مجانية لضغط الصور وتقليل حجمها مع التحكم في الجودة. معالجة محلية على جهازك.">
+<link rel="canonical" href="https://sonori-tools.sonori-space.workers.dev/compress.html">
+<style>
+:root{--green:#123d32;--gold:#e8c99b;--paper:#f7f5ef;--ink:#23342d;--muted:#64736b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,sans-serif}
+header{background:var(--green);color:white;padding:25px 18px 30px}
+nav,main{max-width:760px;margin:auto}
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-weight:800;letter-spacing:1px}
+a{color:inherit}
+nav a{color:var(--gold);text-decoration:none}
+h1{font-size:clamp(25px,6vw,38px);margin:30px 0 8px}
+header p{line-height:1.8;margin:0;color:#f2eee4}
+main{padding:20px 14px 40px}
+.panel{background:white;border:1px solid #e5e3da;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 5px 20px #173c3010}
+label{display:block;font-weight:650;margin-bottom:9px}
+input,select,button{font:inherit}
+input[type=file]{width:100%;padding:13px;background:#faf9f5;border:1px dashed #aab8ae;border-radius:12px}
+input[type=range]{width:100%;accent-color:var(--green)}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+small,.muted{color:var(--muted);line-height:1.7}
+select{width:100%;padding:11px;border:1px solid #d8ded8;border-radius:10px;background:white}
+button,.download{border:0;border-radius:12px;padding:13px 16px;background:var(--green);color:white;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}
+button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+.download{display:block}
+.result{display:none}
+.preview{width:100%;max-height:280px;object-fit:contain;border-radius:10px;background:#f3f3f0;margin:12px 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#f5f6f1;padding:12px;border-radius:12px}
+.stat strong{display:block;font-size:20px;overflow-wrap:anywhere}
+.note{font-size:13px;line-height:1.8;color:var(--muted)}
+footer{text-align:center;padding:22px;color:var(--muted);font-size:13px}
+@media(max-width:460px){.controls{grid-template-columns:1fr}.panel{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+<nav>
+<span class="logo">SONORI TOOLS</span>
+<a href="/">الأدوات الرئيسية ←</a>
+</nav>
+<h1>صور أصغر، بجودة تناسبك</h1>
+<p>قلّلي حجم صورك بسهولة قبل إرسالها أو تحويلها إلى PDF.</p>
+</header>
+<main>
+<section class="panel">
+<label for="file">1. اختاري صورة من هاتفك</label>
+<input id="file" type="file" accept="image/jpeg,image/png,image/webp,image/bmp">
+<p class="note">تتم المعالجة داخل متصفحك. لا تُرفع الصورة إلى موقعنا.</p>
+</section>
+
+<section class="panel">
+<div class="controls">
+<div>
+<label for="quality">2. جودة الصورة: <span id="qvalue">75%</span></label>
+<input id="quality" type="range" min="30" max="95" value="75">
+<small>قيمة أقل تعني عادةً حجمًا أصغر.</small>
+</div>
+<div>
+<label for="width">3. أقصى عرض للصورة</label>
+<select id="width">
+<option value="original">الحجم الأصلي</option>
+<option value="2560">2560 بكسل</option>
+<option value="1920" selected>1920 بكسل</option>
+<option value="1280">1280 بكسل</option>
+<option value="800">800 بكسل</option>
+<option value="480">480 بكسل</option>
+</select>
+</div>
+<div>
+<label for="format">4. صيغة الملف الناتج</label>
+<select id="format">
+<option value="image/webp">WebP — حجم أصغر غالبًا</option>
+<option value="image/jpeg">JPEG — توافق واسع</option>
+</select>
+</div>
+</div>
+<div class="actions">
+<button id="compress" disabled>ضغط الصورة</button>
+<button id="reset" type="button">إعادة ضبط</button>
+</div>
+<p id="status" class="note" role="status" aria-live="polite"></p>
+</section>
+
+<section id="result" class="panel result">
+<h2>النتيجة</h2>
+<img id="preview" class="preview" alt="معاينة الصورة المضغوطة">
+<div class="stats">
+<div class="stat"><small>الحجم الأصلي</small><strong id="before">—</strong></div>
+<div class="stat"><small>الحجم الجديد</small><strong id="after">—</strong></div>
+<div class="stat"><small>التوفير</small><strong id="saved">—</strong></div>
+<div class="stat"><small>الأبعاد</small><strong id="dimensions">—</strong></div>
+</div>
+<a id="download" class="download" style="margin-top:16px" download="sonori-compressed.webp">تحميل الصورة المضغوطة</a>
+<p class="note">قد لا يقل الحجم في كل الحالات؛ فالنتيجة تعتمد على الصورة والصيغة والجودة المختارة.</p>
+</section>
+<p class="note">تنبيه: التحويل إلى JPEG يزيل الشفافية ويستبدلها بخلفية بيضاء. احتفظي بالصورة الأصلية إذا أردتِ الرجوع إليها.</p>
+</main>
+<footer>Sonori Tools · أدوات مجانية وسهلة للصور والوثائق</footer>
+<script>
+const fileInput=document.getElementById('file');
+const quality=document.getElementById('quality');
+const widthSelect=document.getElementById('width');
+const formatSelect=document.getElementById('format');
+const compressBtn=document.getElementById('compress');
+const resetBtn=document.getElementById('reset');
+const status=document.getElementById('status');
+const result=document.getElementById('result');
+let sourceFile=null,sourceImage=null,outputUrl=null;
+
+function sizeText(bytes){
+ if(bytes<1024)return bytes+' بايت';
+ if(bytes<1024*1024)return (bytes/1024).toFixed(1)+' كيلوبايت';
+ return (bytes/(1024*1024)).toFixed(2)+' ميغابايت';
+}
+function cleanup(){
+ if(outputUrl){URL.revokeObjectURL(outputUrl);outputUrl=null;}
+}
+quality.addEventListener('input',()=>document.getElementById('qvalue').textContent=quality.value+'%');
+
+fileInput.addEventListener('change',()=>{
+ cleanup();sourceFile=null;sourceImage=null;result.style.display='none';
+ const f=fileInput.files&&fileInput.files[0];
+ if(!f)return;
+ if(!f.type.startsWith('image/')){status.textContent='يرجى اختيار ملف صورة صالح.';return;}
+ if(f.size>25*1024*1024){status.textContent='حجم الصورة أكبر من 25 ميغابايت. اختاري صورة أصغر.';return;}
+ sourceFile=f;
+ const img=new Image();
+ img.onload=()=>{
+  sourceImage=img;compressBtn.disabled=false;
+  status.textContent='تم اختيار الصورة: '+f.name+' — '+sizeText(f.size);
+ };
+ img.onerror=()=>{sourceImage=null;compressBtn.disabled=true;status.textContent='تعذّر فتح هذه الصورة. جرّبي صيغة أخرى.';};
+ img.src=URL.createObjectURL(f);
+});
+
+compressBtn.addEventListener('click',()=>{
+ if(!sourceFile||!sourceImage)return;
+ compressBtn.disabled=true;status.textContent='جارٍ ضغط الصورة…';
+ try{
+  const max=widthSelect.value==='original'?sourceImage.naturalWidth:Number(widthSelect.value);
+  const scale=Math.min(1,max/sourceImage.naturalWidth);
+  const w=Math.max(1,Math.round(sourceImage.naturalWidth*scale));
+  const h=Math.max(1,Math.round(sourceImage.naturalHeight*scale));
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw new Error('canvas');
+  if(formatSelect.value==='image/jpeg'){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);}
+  ctx.drawImage(sourceImage,0,0,w,h);
+  canvas.toBlob(blob=>{
+   compressBtn.disabled=false;
+   if(!blob){status.textContent='تعذّر إنشاء الصورة. اختاري صيغة JPEG أو WebP.';return;}
+   cleanup();outputUrl=URL.createObjectURL(blob);
+   document.getElementById('preview').src=outputUrl;
+   document.getElementById('before').textContent=sizeText(sourceFile.size);
+   document.getElementById('after').textContent=sizeText(blob.size);
+   const diff=100*(sourceFile.size-blob.size)/sourceFile.size;
+   document.getElementById('saved').textContent=diff>=0?diff.toFixed(1)+'% توفير':Math.abs(diff).toFixed(1)+'% زيادة';
+   document.getElementById('dimensions').textContent=w+' × '+h;
+   const ext=formatSelect.value==='image/jpeg'?'jpg':'webp';
+   const link=document.getElementById('download');
+   link.href=outputUrl;link.download='sonori-compressed.'+ext;
+   result.style.display='block';
+   status.textContent=blob.size<sourceFile.size?'نجح الضغط. يمكنك معاينة النتيجة وتنزيلها.':'اكتملت المعالجة، لكن الحجم لم ينخفض. جرّبي جودة أقل أو عرضًا أصغر.';
+  },formatSelect.value,Number(quality.value)/100);
+ }catch(e){compressBtn.disabled=false;status.textContent='حدث خطأ أثناء معالجة الصورة. جرّبي صورة أخرى.';}
+});
+
+resetBtn.addEventListener('click',()=>{
+ cleanup();sourceFile=null;sourceImage=null;fileInput.value='';
+ quality.value=75;document.getElementById('qvalue').textContent='75%';
+ widthSelect.value='1920';formatSelect.value='image/webp';
+ compressBtn.disabled=true;result.style.display='none';status.textContent='';
+});
+window.addEventListener('pagehide',cleanup);
+</script>
+</body>
+</html>
