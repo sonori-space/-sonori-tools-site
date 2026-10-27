@@ -1,10 +1,11 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="google-site-verification" content="tUpvosDLDAVSq5AfOBjFNBx2FupWfodihYnU6jlZABE" />
-  <title>Sonori Tools — تحويل الصور إلى PDF مجانًا</title>
+<title>Sonori Tools — تحويل الصور إلى PDF مجانًا</title>
 <meta name="description" content="حوّل صورك إلى ملف PDF واحد مجانًا من هاتفك أو حاسوبك. رتّب الصور واحذف ما لا تحتاجه، مع معالجة الصور داخل المتصفح. Convertissez vos photos en PDF gratuitement.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#1f5a4c">
@@ -86,15 +87,13 @@ hr{border:0;border-top:1px solid var(--line);margin:16px 0}
 <strong id="howTitle">طريقة الاستخدام</strong>
 <p class="small" id="how">١. اختاري الصور. ٢. استخدمي الأسهم لتغيير الترتيب أو احذفي صورة. ٣. اضغطي «إنشاء ملف PDF».</p>
 </section>
-
 <section class="panel">
-  <strong>Sonori Image Compressor</strong>
-  <p class="small">قلّلي حجم صورك قبل إرسالها أو تحويلها إلى PDF.</p>
-  <a href="/compress.html" style="display:inline-block;text-decoration:none;background:var(--green);color:white;border-radius:12px;padding:12px 15px;font-weight:650">
-    ضغط الصور ←
-  </a>
+<strong>Sonori Image Compressor</strong>
+<p class="small" id="compressDescription">قلّلي حجم صورك قبل إرسالها أو تحويلها إلى PDF.</p>
+<a id="compressLink" href="/compress.html" style="display:inline-block;text-decoration:none;background:var(--green);color:white;border-radius:12px;padding:12px 15px;font-weight:650">
+ضغط الصور ←
+</a>
 </section>
-
 <footer class="note" id="disclaimer">نسخة تجريبية أولية. اختبريها على صور غير حساسة أولًا، وتحققي من الملف الناتج قبل الاعتماد عليه في وثائق مهمة.</footer>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -102,21 +101,95 @@ hr{border:0;border-top:1px solid var(--line);margin:16px 0}
 const $=id=>document.getElementById(id);
 let images=[], french=false;
 const words={
-ar:{brand:"أداة مجانية للصور والوثائق",heading:"حوّلي صورك إلى ملف PDF",intro:"اختاري صورًا من هاتفك، رتّبيها كما تريدين، ثم أنشئي ملفًا واحدًا قابلًا للتنزيل.",pick:"＋ اختيار الصور",make:"إنشاء ملف PDF",clear:"حذف الكل",none:"لم تُختَر صور بعد.",count:n=>`عدد الصور: ${n}`,privacyTitle:"الخصوصية",privacy:"تُعالَج الصور داخل متصفحك في هذه النسخة التجريبية، ولا تُرفع إلى موقعنا. لا تغلقي الصفحة قبل تنزيل الملف.",howTitle:"طريقة الاستخدام",how:"١. اختاري الصور. ٢. استخدمي الأسهم لتغيير الترتيب أو احذفي صورة. ٣. اضغطي «إنشاء ملف PDF».",note:"نسخة تجريبية أولية. اختبريها على صور غير حساسة أولًا، وتحققي من الملف الناتج قبل الاعتماد عليه في وثائق مهمة.",up:"أعلى",down:"أسفل",del:"حذف",ready:"أُضيفت الصور. راجعي ترتيبها قبل إنشاء الملف.",working:"جارٍ إنشاء ملف PDF…",done:"تم إنشاء الملف وبدء تنزيله.",error:"تعذّر إنشاء PDF. تحققي من اتصال الإنترنت ثم حاولي مجددًا.",empty:"اختاري صورة واحدة على الأقل.",lang:"Français"},
-fr:{brand:"Outil gratuit pour images et documents",heading:"Convertissez vos photos en PDF",intro:"Choisissez des images depuis votre téléphone, réorganisez-les, puis créez un seul fichier à télécharger.",pick:"＋ Choisir des images",make:"Créer le PDF",clear:"Tout supprimer",none:"Aucune image sélectionnée.",count:n=>`Nombre d’images : ${n}`,privacyTitle:"Confidentialité",privacy:"Dans cette version de démonstration, les images sont traitées dans votre navigateur et ne sont pas envoyées sur notre site. Ne fermez pas la page avant le téléchargement.",howTitle:"Mode d’emploi",how:"1. Choisissez les images. 2. Réorganisez-les avec les flèches ou supprimez-en. 3. Appuyez sur « Créer le PDF ».",note:"Première version de démonstration. Testez d’abord avec des images non sensibles et vérifiez le fichier avant de l’utiliser pour des documents importants.",up:"Monter",down:"Descendre",del:"Supprimer",ready:"Images ajoutées. Vérifiez l’ordre avant de créer le PDF.",working:"Création du PDF…",done:"Le PDF est créé et son téléchargement a commencé.",error:"Impossible de créer le PDF. Vérifiez la connexion Internet puis réessayez.",empty:"Choisissez au moins une image.",lang:"العربية"}
+ar:{
+brand:"أداة مجانية للصور والوثائق",
+heading:"حوّلي صورك إلى ملف PDF",
+intro:"اختاري صورًا من هاتفك، رتّبيها كما تريدين، ثم أنشئي ملفًا واحدًا قابلًا للتنزيل.",
+pick:"＋ اختيار الصور",
+make:"إنشاء ملف PDF",
+clear:"حذف الكل",
+none:"لم تُختَر صور بعد.",
+count:n=>`عدد الصور: ${n}`,
+privacyTitle:"الخصوصية",
+privacy:"تُعالَج الصور داخل متصفحك في هذه النسخة التجريبية، ولا تُرفع إلى موقعنا. لا تغلقي الصفحة قبل تنزيل الملف.",
+howTitle:"طريقة الاستخدام",
+how:"١. اختاري الصور. ٢. استخدمي الأسهم لتغيير الترتيب أو احذفي صورة. ٣. اضغطي «إنشاء ملف PDF».",
+note:"نسخة تجريبية أولية. اختبريها على صور غير حساسة أولًا، وتحققي من الملف الناتج قبل الاعتماد عليه في وثائق مهمة.",
+up:"أعلى",
+down:"أسفل",
+del:"حذف",
+ready:"أُضيفت الصور. راجعي ترتيبها قبل إنشاء الملف.",
+working:"جارٍ إنشاء ملف PDF…",
+done:"تم إنشاء الملف وبدء تنزيله.",
+error:"تعذّر إنشاء PDF. تحققي من اتصال الإنترنت ثم حاولي مجددًا.",
+empty:"اختاري صورة واحدة على الأقل.",
+lang:"Français",
+compressLink:"ضغط الصور ←"
+},
+fr:{
+brand:"Outil gratuit pour images et documents",
+heading:"Convertissez vos photos en PDF",
+intro:"Choisissez des images depuis votre téléphone, réorganisez-les, puis créez un seul fichier à télécharger.",
+pick:"＋ Choisir des images",
+make:"Créer le PDF",
+clear:"Tout supprimer",
+none:"Aucune image sélectionnée.",
+count:n=>`Nombre d’images : ${n}`,
+privacyTitle:"Confidentialité",
+privacy:"Dans cette version de démonstration, les images sont traitées dans votre navigateur et ne sont pas envoyées sur notre site. Ne fermez pas la page avant le téléchargement.",
+howTitle:"Mode d’emploi",
+how:"1. Choisissez les images. 2. Réorganisez-les avec les flèches ou supprimez-en. 3. Appuyez sur « Créer le PDF ».",
+note:"Première version de démonstration. Testez d’abord avec des images non sensibles et vérifiez le fichier avant de l’utiliser pour des documents importants.",
+up:"Monter",
+down:"Descendre",
+del:"Supprimer",
+ready:"Images ajoutées. Vérifiez l’ordre avant de créer le PDF.",
+working:"Création du PDF…",
+done:"Le PDF est créé et son téléchargement a commencé.",
+error:"Impossible de créer le PDF. Vérifiez la connexion Internet puis réessayez.",
+empty:"Choisissez au moins une image.",
+lang:"العربية",
+compressLink:"Compresser les images ←"
+}
 };
 function t(){return words[french?"fr":"ar"]}
-function setLang(){const w=t();document.documentElement.lang=french?"fr":"ar";document.documentElement.dir=french?"ltr":"rtl";
-for(const [id,key] of [["brand","brand"],["heading","heading"],["intro","intro"],["pickLabel","pick"],["make","make"],["clear","clear"],["privacyTitle","privacyTitle"],["privacy","privacy"],["howTitle","howTitle"],["how","how"],["disclaimer","note"],["lang","lang"]])$(id).textContent=w[key];
-$("lang").textContent=w.lang; render(); }
+function setLang(){
+const w=t();
+document.documentElement.lang=french?"fr":"ar";
+document.documentElement.dir=french?"ltr":"rtl";
+for(const [id,key] of [
+["brand","brand"],
+["heading","heading"],
+["intro","intro"],
+["pickLabel","pick"],
+["make","make"],
+["clear","clear"],
+["privacyTitle","privacyTitle"],
+["privacy","privacy"],
+["howTitle","howTitle"],
+["how","how"],
+["disclaimer","note"],
+["lang","lang"],
+["compressLink","compressLink"]
+])$(id).textContent=w[key];
+$("lang").textContent=w.lang;
+render();
+}
 $("lang").addEventListener("click",()=>{french=!french;setLang()});
 $("files").addEventListener("change",e=>{
 const list=[...e.target.files];
-list.forEach(file=>{if(!file.type.startsWith("image/"))return;const url=URL.createObjectURL(file);images.push({file,url,name:file.name})});
-e.target.value="";render();$("status").textContent=t().ready;
+list.forEach(file=>{
+if(!file.type.startsWith("image/"))return;
+const url=URL.createObjectURL(file);
+images.push({file,url,name:file.name});
+});
+e.target.value="";
+render();
+$("status").textContent=t().ready;
 });
 function render(){
-const w=t();$("grid").innerHTML="";
+const w=t();
+$("grid").innerHTML="";
 images.forEach((im,i)=>{
 const tile=document.createElement("div");tile.className="tile";
 const img=document.createElement("img");img.src=im.url;img.alt=im.name;
@@ -127,23 +200,40 @@ const down=document.createElement("button");down.className="secondary";down.text
 const del=document.createElement("button");del.className="secondary";del.textContent="×";del.title=w.del;del.setAttribute("aria-label",w.del);del.onclick=()=>{URL.revokeObjectURL(images[i].url);images.splice(i,1);render()};
 controls.append(up,down,del);foot.append(name,controls);tile.append(img,foot);$("grid").append(tile);
 });
-$("count").textContent=images.length?w.count(images.length):w.none;$("make").disabled=!images.length;$("clear").disabled=!images.length;
+$("count").textContent=images.length?w.count(images.length):w.none;
+$("make").disabled=!images.length;
+$("clear").disabled=!images.length;
 }
-$("clear").onclick=()=>{images.forEach(x=>URL.revokeObjectURL(x.url));images=[];$("status").textContent="";render()};
+$("clear").onclick=()=>{
+images.forEach(x=>URL.revokeObjectURL(x.url));
+images=[];
+$("status").textContent="";
+render();
+};
 $("make").onclick=async()=>{
 if(!images.length){$("status").textContent=t().empty;return}
 if(!window.jspdf?.jsPDF){$("status").textContent=t().error;return}
-$("make").disabled=true;$("status").textContent=t().working;
+$("make").disabled=true;
+$("status").textContent=t().working;
 try{
-const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"p",unit:"mm",format:"a4",compress:true});
+const {jsPDF}=window.jspdf;
+const pdf=new jsPDF({orientation:"p",unit:"mm",format:"a4",compress:true});
 for(let i=0;i<images.length;i++){
 if(i)pdf.addPage();
-const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(images[i].file)});
-const dims=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve({im,w:im.naturalWidth,h:im.naturalHeight});im.onerror=reject;im.src=data});
+const data=await new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=()=>resolve(reader.result);
+reader.onerror=reject;
+reader.readAsDataURL(images[i].file);
+});
+const dims=await new Promise((resolve,reject)=>{
+const im=new Image();
+im.onload=()=>resolve({im,w:im.naturalWidth,h:im.naturalHeight});
+im.onerror=reject;
+im.src=data;
+});
 const pageW=210,pageH=297,margin=8,scale=Math.min((pageW-2*margin)/dims.w,(pageH-2*margin)/dims.h);
 const w=dims.w*scale,h=dims.h*scale;
-// Convert various browser-supported image types to JPEG so PDF export
-// does not mislabel PNG/WebP data as JPEG. White background preserves transparency cleanly.
 const canvas=document.createElement("canvas");
 canvas.width=dims.w;canvas.height=dims.h;
 const ctx=canvas.getContext("2d");
@@ -152,9 +242,13 @@ ctx.drawImage(dims.im,0,0);
 const jpegData=canvas.toDataURL("image/jpeg",0.92);
 pdf.addImage(jpegData,"JPEG",(pageW-w)/2,(pageH-h)/2,w,h,undefined,"FAST");
 }
-pdf.save("photos-to-pdf.pdf");$("status").textContent=t().done;
-}catch(e){$("status").textContent=t().error}
-finally{$("make").disabled=!images.length}
+pdf.save("photos-to-pdf.pdf");
+$("status").textContent=t().done;
+}catch(e){
+$("status").textContent=t().error;
+}finally{
+$("make").disabled=!images.length;
+}
 };
 setLang();
 </script>
