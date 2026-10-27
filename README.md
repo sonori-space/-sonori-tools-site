@@ -1,2 +1,2 @@
-# -sonori-tools-site
+# sonori-tools-site
 Source files for Sonori Tools website.
