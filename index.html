@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonori Tools — تحويل الصور إلى PDF مجانًا</title>
+<meta name="description" content="حوّل صورك إلى ملف PDF واحد مجانًا من هاتفك أو حاسوبك. رتّب الصور واحذف ما لا تحتاجه، مع معالجة الصور داخل المتصفح. Convertissez vos photos en PDF gratuitement.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#1f5a4c">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sonori Tools — صورك في ملف PDF واحد">
+<meta property="og:description" content="أداة مجانية لترتيب الصور وتحويلها إلى PDF داخل المتصفح، بالعربية والفرنسية.">
+<meta property="og:url" content="https://sonori-tools.sonori-space.workers.dev/">
+<meta property="og:locale" content="ar_DZ">
+<meta property="og:locale:alternate" content="fr_FR">
+<link rel="canonical" href="https://sonori-tools.sonori-space.workers.dev/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Sonori Tools — صوري إلى PDF",
+  "url": "https://sonori-tools.sonori-space.workers.dev/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "inLanguage": ["ar", "fr"],
+  "description": "أداة مجانية لترتيب الصور وتحويلها إلى ملف PDF واحد داخل المتصفح.",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+}
+</script>
+<style>
+:root{--ink:#202b29;--muted:#687572;--paper:#fffdf8;--green:#1f5a4c;--line:#dce5df;--rose:#b77978}
+*{box-sizing:border-box}
+body{margin:0;background:#f2f5f1;color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:760px;margin:0 auto;padding:22px 15px 44px}
+header{padding:20px 4px 12px}
+.kicker{font-size:.85rem;color:var(--green);font-weight:700}
+h1{font-size:clamp(1.65rem,5vw,2.35rem);line-height:1.25;margin:.45rem 0}
+p{line-height:1.7}
+.sub{color:var(--muted);margin-top:8px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #203c2d0a}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+button,.pick{border:0;border-radius:12px;padding:12px 15px;font:inherit;font-weight:650;cursor:pointer}
+.primary{background:var(--green);color:white}
+.secondary{background:#e8efea;color:var(--ink)}
+.pick{display:inline-block;background:var(--green);color:#fff}
+input[type=file]{display:none}
+.small{font-size:.88rem;color:var(--muted)}
+#status{min-height:1.5em;color:var(--green);font-weight:600}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:10px;margin-top:14px}
+.tile{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white;min-width:0}
+.tile img{width:100%;height:135px;object-fit:contain;background:#edf0ed;display:block}
+.tile footer{padding:8px}
+.tile .name{font-size:.78rem;overflow-wrap:anywhere;min-height:2.5em}
+.tile .move{display:flex;gap:5px;margin-top:7px}
+.tile button{padding:7px 9px;font-size:.85rem;flex:1}
+button:disabled{opacity:.4;cursor:not-allowed}
+footer.note{font-size:.82rem;color:var(--muted);line-height:1.65}
+.lang{float:left;background:transparent;border:1px solid var(--line);padding:7px 10px}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+</style>
+</head>
+<body>
+<main>
+<header>
+<button id="lang" class="lang secondary" type="button">Français</button>
+<div class="kicker" id="brand">أداة مجانية للصور والوثائق</div>
+<h1 id="heading">حوّلي صورك إلى ملف PDF</h1>
+<p class="sub" id="intro">اختاري صورًا من هاتفك، رتّبيها كما تريدين، ثم أنشئي ملفًا واحدًا قابلًا للتنزيل.</p>
+</header>
+<section class="panel">
+<label for="files" class="pick" id="pickLabel">＋ اختيار الصور</label>
+<input id="files" type="file" accept="image/*" multiple>
+<div class="actions">
+<button id="make" class="primary" type="button" disabled>إنشاء ملف PDF</button>
+<button id="clear" class="secondary" type="button" disabled>حذف الكل</button>
+</div>
+<p id="status" role="status" aria-live="polite"></p>
+<p class="small" id="count">لم تُختَر صور بعد.</p>
+<div id="grid"></div>
+</section>
+<section class="panel">
+<strong id="privacyTitle">الخصوصية</strong>
+<p class="small" id="privacy">تُعالَج الصور داخل متصفحك في هذه النسخة التجريبية، ولا تُرفع إلى موقعنا. لا تغلقي الصفحة قبل تنزيل الملف.</p>
+<hr>
+<strong id="howTitle">طريقة الاستخدام</strong>
+<p class="small" id="how">١. اختاري الصور. ٢. استخدمي الأسهم لتغيير الترتيب أو احذفي صورة. ٣. اضغطي «إنشاء ملف PDF».</p>
+</section>
+<footer class="note" id="disclaimer">نسخة تجريبية أولية. اختبريها على صور غير حساسة أولًا، وتحققي من الملف الناتج قبل الاعتماد عليه في وثائق مهمة.</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+let images=[], french=false;
+const words={
+ar:{brand:"أداة مجانية للصور والوثائق",heading:"حوّلي صورك إلى ملف PDF",intro:"اختاري صورًا من هاتفك، رتّبيها كما تريدين، ثم أنشئي ملفًا واحدًا قابلًا للتنزيل.",pick:"＋ اختيار الصور",make:"إنشاء ملف PDF",clear:"حذف الكل",none:"لم تُختَر صور بعد.",count:n=>`عدد الصور: ${n}`,privacyTitle:"الخصوصية",privacy:"تُعالَج الصور داخل متصفحك في هذه النسخة التجريبية، ولا تُرفع إلى موقعنا. لا تغلقي الصفحة قبل تنزيل الملف.",howTitle:"طريقة الاستخدام",how:"١. اختاري الصور. ٢. استخدمي الأسهم لتغيير الترتيب أو احذفي صورة. ٣. اضغطي «إنشاء ملف PDF».",note:"نسخة تجريبية أولية. اختبريها على صور غير حساسة أولًا، وتحققي من الملف الناتج قبل الاعتماد عليه في وثائق مهمة.",up:"أعلى",down:"أسفل",del:"حذف",ready:"أُضيفت الصور. راجعي ترتيبها قبل إنشاء الملف.",working:"جارٍ إنشاء ملف PDF…",done:"تم إنشاء الملف وبدء تنزيله.",error:"تعذّر إنشاء PDF. تحققي من اتصال الإنترنت ثم حاولي مجددًا.",empty:"اختاري صورة واحدة على الأقل.",lang:"Français"},
+fr:{brand:"Outil gratuit pour images et documents",heading:"Convertissez vos photos en PDF",intro:"Choisissez des images depuis votre téléphone, réorganisez-les, puis créez un seul fichier à télécharger.",pick:"＋ Choisir des images",make:"Créer le PDF",clear:"Tout supprimer",none:"Aucune image sélectionnée.",count:n=>`Nombre d’images : ${n}`,privacyTitle:"Confidentialité",privacy:"Dans cette version de démonstration, les images sont traitées dans votre navigateur et ne sont pas envoyées sur notre site. Ne fermez pas la page avant le téléchargement.",howTitle:"Mode d’emploi",how:"1. Choisissez les images. 2. Réorganisez-les avec les flèches ou supprimez-en. 3. Appuyez sur « Créer le PDF ».",note:"Première version de démonstration. Testez d’abord avec des images non sensibles et vérifiez le fichier avant de l’utiliser pour des documents importants.",up:"Monter",down:"Descendre",del:"Supprimer",ready:"Images ajoutées. Vérifiez l’ordre avant de créer le PDF.",working:"Création du PDF…",done:"Le PDF est créé et son téléchargement a commencé.",error:"Impossible de créer le PDF. Vérifiez la connexion Internet puis réessayez.",empty:"Choisissez au moins une image.",lang:"العربية"}
+};
+function t(){return words[french?"fr":"ar"]}
+function setLang(){const w=t();document.documentElement.lang=french?"fr":"ar";document.documentElement.dir=french?"ltr":"rtl";
+for(const [id,key] of [["brand","brand"],["heading","heading"],["intro","intro"],["pickLabel","pick"],["make","make"],["clear","clear"],["privacyTitle","privacyTitle"],["privacy","privacy"],["howTitle","howTitle"],["how","how"],["disclaimer","note"],["lang","lang"]])$(id).textContent=w[key];
+$("lang").textContent=w.lang; render(); }
+$("lang").addEventListener("click",()=>{french=!french;setLang()});
+$("files").addEventListener("change",e=>{
+const list=[...e.target.files];
+list.forEach(file=>{if(!file.type.startsWith("image/"))return;const url=URL.createObjectURL(file);images.push({file,url,name:file.name})});
+e.target.value="";render();$("status").textContent=t().ready;
+});
+function render(){
+const w=t();$("grid").innerHTML="";
+images.forEach((im,i)=>{
+const tile=document.createElement("div");tile.className="tile";
+const img=document.createElement("img");img.src=im.url;img.alt=im.name;
+const foot=document.createElement("footer"),name=document.createElement("div");name.className="name";name.textContent=im.name;
+const controls=document.createElement("div");controls.className="move";
+const up=document.createElement("button");up.className="secondary";up.textContent="↑";up.title=w.up;up.setAttribute("aria-label",w.up);up.disabled=i===0;up.onclick=()=>{[images[i-1],images[i]]=[images[i],images[i-1]];render()};
+const down=document.createElement("button");down.className="secondary";down.textContent="↓";down.title=w.down;down.setAttribute("aria-label",w.down);down.disabled=i===images.length-1;down.onclick=()=>{[images[i+1],images[i]]=[images[i],images[i+1]];render()};
+const del=document.createElement("button");del.className="secondary";del.textContent="×";del.title=w.del;del.setAttribute("aria-label",w.del);del.onclick=()=>{URL.revokeObjectURL(images[i].url);images.splice(i,1);render()};
+controls.append(up,down,del);foot.append(name,controls);tile.append(img,foot);$("grid").append(tile);
+});
+$("count").textContent=images.length?w.count(images.length):w.none;$("make").disabled=!images.length;$("clear").disabled=!images.length;
+}
+$("clear").onclick=()=>{images.forEach(x=>URL.revokeObjectURL(x.url));images=[];$("status").textContent="";render()};
+$("make").onclick=async()=>{
+if(!images.length){$("status").textContent=t().empty;return}
+if(!window.jspdf?.jsPDF){$("status").textContent=t().error;return}
+$("make").disabled=true;$("status").textContent=t().working;
+try{
+const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"p",unit:"mm",format:"a4",compress:true});
+for(let i=0;i<images.length;i++){
+if(i)pdf.addPage();
+const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(images[i].file)});
+const dims=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve({im,w:im.naturalWidth,h:im.naturalHeight});im.onerror=reject;im.src=data});
+const pageW=210,pageH=297,margin=8,scale=Math.min((pageW-2*margin)/dims.w,(pageH-2*margin)/dims.h);
+const w=dims.w*scale,h=dims.h*scale;
+// Convert various browser-supported image types to JPEG so PDF export
+// does not mislabel PNG/WebP data as JPEG. White background preserves transparency cleanly.
+const canvas=document.createElement("canvas");
+canvas.width=dims.w;canvas.height=dims.h;
+const ctx=canvas.getContext("2d");
+ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.drawImage(dims.im,0,0);
+const jpegData=canvas.toDataURL("image/jpeg",0.92);
+pdf.addImage(jpegData,"JPEG",(pageW-w)/2,(pageH-h)/2,w,h,undefined,"FAST");
+}
+pdf.save("photos-to-pdf.pdf");$("status").textContent=t().done;
+}catch(e){$("status").textContent=t().error}
+finally{$("make").disabled=!images.length}
+};
+setLang();
+</script>
+</body>
+</html>
