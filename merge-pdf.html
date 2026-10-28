@@ -1,0 +1,475 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123d32">
+  <title>دمج ملفات PDF مجانًا | Sonori Tools</title>
+  <meta name="description" content="ادمج عدة ملفات PDF في ملف واحد مجانًا، ورتبها حسب رغبتك. معالجة محلية وآمنة داخل المتصفح دون رفع ملفاتك.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://sonori-tools.sonori-space.workers.dev/merge-pdf">
+  <style>
+    :root {
+      --green: #123d32;
+      --green2: #1c5948;
+      --gold: #c6a568;
+      --ivory: #f7f5ef;
+      --ink: #26352f;
+      --muted: #66756d;
+      --line: #dce3dc;
+      --white: #fff;
+      --red: #a83b36;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+    header {
+      background: var(--green);
+      color: white;
+      padding: 19px 16px;
+      border-bottom: 3px solid var(--gold);
+    }
+    .top {
+      max-width: 850px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand {
+      font-weight: 800;
+      font-size: 21px;
+      letter-spacing: .3px;
+    }
+    .brand span { color: var(--gold); }
+    button, select, input { font: inherit; }
+    button, .file-label {
+      cursor: pointer;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-weight: 700;
+      transition: opacity .2s;
+    }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    .lang {
+      background: transparent;
+      color: white;
+      border: 1px solid #78948a;
+      padding: 7px 12px;
+    }
+    main {
+      max-width: 760px;
+      margin: 28px auto;
+      padding: 0 15px 35px;
+    }
+    .intro { text-align: center; margin-bottom: 23px; }
+    h1 {
+      color: var(--green);
+      font-size: clamp(25px, 5vw, 35px);
+      line-height: 1.35;
+      margin: 0 0 10px;
+    }
+    .intro p { color: var(--muted); margin: 0 auto; max-width: 570px; }
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 20px;
+      box-shadow: 0 8px 25px #123d320a;
+    }
+    .drop {
+      display: block;
+      border: 2px dashed #9ab5a6;
+      background: #f8fbf8;
+      border-radius: 14px;
+      padding: 25px 14px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .drop strong { display: block; color: var(--green); font-size: 18px; }
+    .drop small { display: block; color: var(--muted); margin-top: 4px; }
+    #files { display: none; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin: 15px 0;
+    }
+    .primary { background: var(--green); color: white; }
+    .secondary { background: #e8eee9; color: var(--green); }
+    .danger { background: #f8e9e7; color: var(--red); }
+    .gold { background: var(--gold); color: #1c2c25; }
+    .list-title { margin: 17px 0 8px; font-weight: 750; }
+    #fileList { list-style: none; padding: 0; margin: 0; }
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 9px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      background: white;
+    }
+    .file-name {
+      min-width: 0;
+      flex: 1;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+    .file-size { display: block; color: var(--muted); font-size: 12px; }
+    .mini {
+      padding: 5px 9px;
+      background: #eef2ee;
+      color: var(--green);
+      flex-shrink: 0;
+    }
+    .remove { background: #f8e9e7; color: var(--red); }
+    .status {
+      margin-top: 13px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: #f1f5f1;
+      color: var(--green);
+      overflow-wrap: anywhere;
+    }
+    .status:empty { display: none; }
+    .status.error { background: #f8e9e7; color: var(--red); }
+    .privacy {
+      margin-top: 17px;
+      padding: 12px;
+      border-inline-start: 3px solid var(--gold);
+      background: #faf7ee;
+      color: #61573f;
+      font-size: 13px;
+    }
+    .info { margin-top: 24px; }
+    .info h2 { font-size: 19px; color: var(--green); }
+    .info p, .info li { color: var(--muted); font-size: 14px; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 18px;
+    }
+    a { color: var(--green2); }
+    [dir="ltr"] .file-row { text-align: left; }
+    @media (max-width: 430px) {
+      .panel { padding: 13px; }
+      .file-row { flex-wrap: wrap; }
+      .file-name { flex-basis: 100%; }
+      .actions button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">Sonori <span>Tools</span></div>
+    <button class="lang" id="langBtn" type="button">Français</button>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <h1 data-i18n="title">ادمجي ملفات PDF في ملف واحد</h1>
+    <p data-i18n="subtitle">اجمعي مستنداتك ورتبيها كما تريدين، مجانًا ودون رفع ملفاتك إلى الإنترنت.</p>
+  </section>
+
+  <section class="panel">
+    <label class="drop" for="files">
+      <strong data-i18n="choose">＋ اختاري ملفات PDF</strong>
+      <small data-i18n="hint">يمكنك اختيار عدة ملفات دفعة واحدة</small>
+    </label>
+    <input id="files" type="file" accept="application/pdf,.pdf" multiple>
+
+    <div class="actions">
+      <button class="secondary" id="addBtn" type="button" data-i18n="add">إضافة ملفات</button>
+      <button class="danger" id="clearBtn" type="button" data-i18n="clear">حذف الكل</button>
+    </div>
+
+    <div class="list-title" data-i18n="listTitle">ترتيب الملفات</div>
+    <p id="empty" data-i18n="empty">لم تختاري أي ملف بعد.</p>
+    <ol id="fileList"></ol>
+
+    <div class="actions">
+      <button class="primary" id="mergeBtn" type="button" disabled data-i18n="merge">دمج ملفات PDF</button>
+    </div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+
+    <div class="privacy" data-i18n="privacy">
+      خصوصيتك مهمة: تتم معالجة الملفات داخل متصفحك، ولا تُرسل إلى خادمنا.
+    </div>
+  </section>
+
+  <section class="info">
+    <h2 data-i18n="howTitle">كيفية دمج ملفات PDF</h2>
+    <ol>
+      <li data-i18n="step1">اختاري ملفين PDF أو أكثر من جهازك.</li>
+      <li data-i18n="step2">استخدمي الأسهم لترتيب الملفات قبل الدمج.</li>
+      <li data-i18n="step3">اضغطي على زر الدمج لتنزيل الملف النهائي.</li>
+    </ol>
+    <h2 data-i18n="faqTitle">هل الخدمة مجانية وآمنة؟</h2>
+    <p data-i18n="faq">نعم، الأداة مجانية وتعمل محليًا في المتصفح. لا تغلقي الصفحة أثناء معالجة الملفات الكبيرة.</p>
+  </section>
+</main>
+
+<footer>© <span id="year"></span> Sonori Tools</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const input = $("files");
+  const list = $("fileList");
+  const empty = $("empty");
+  const mergeBtn = $("mergeBtn");
+  const status = $("status");
+  let files = [];
+  let lang = "ar";
+  let busy = false;
+
+  const messages = {
+    ar: {
+      title: "ادمجي ملفات PDF في ملف واحد",
+      subtitle: "اجمعي مستنداتك ورتبيها كما تريدين، مجانًا ودون رفع ملفاتك إلى الإنترنت.",
+      choose: "＋ اختاري ملفات PDF",
+      hint: "يمكنك اختيار عدة ملفات دفعة واحدة",
+      add: "إضافة ملفات",
+      clear: "حذف الكل",
+      listTitle: "ترتيب الملفات",
+      empty: "لم تختاري أي ملف بعد.",
+      merge: "دمج ملفات PDF",
+      merging: "جارٍ دمج الملفات، يرجى الانتظار...",
+      privacy: "خصوصيتك مهمة: تتم معالجة الملفات داخل متصفحك، ولا تُرسل إلى خادمنا.",
+      howTitle: "كيفية دمج ملفات PDF",
+      step1: "اختاري ملفين PDF أو أكثر من جهازك.",
+      step2: "استخدمي الأسهم لترتيب الملفات قبل الدمج.",
+      step3: "اضغطي على زر الدمج لتنزيل الملف النهائي.",
+      faqTitle: "هل الخدمة مجانية وآمنة؟",
+      faq: "نعم، الأداة مجانية وتعمل محليًا في المتصفح. لا تغلقي الصفحة أثناء معالجة الملفات الكبيرة.",
+      up: "أعلى", down: "أسفل", remove: "حذف",
+      added: "تمت إضافة الملفات.",
+      badFile: "تم تجاهل ملف غير صالح أو ليس بصيغة PDF.",
+      needTwo: "اختاري ملفين PDF على الأقل للدمج.",
+      failed: "تعذر دمج الملفات. تأكدي من أن ملفات PDF سليمة وغير محمية بكلمة مرور.",
+      done: "تم الدمج بنجاح. بدأ تنزيل الملف.",
+      libraryError: "تعذر تحميل مكتبة الدمج. تحققي من اتصال الإنترنت ثم أعيدي المحاولة.",
+      tooLarge: "حجم الملفات الإجمالي كبير جدًا لهذه الجلسة. جربي عددًا أقل من الملفات.",
+      filename: "ملفات-مدمجة.pdf"
+    },
+    fr: {
+      title: "Fusionnez vos fichiers PDF en un seul",
+      subtitle: "Réunissez et organisez vos documents gratuitement, sans envoyer vos fichiers sur Internet.",
+      choose: "＋ Choisir des fichiers PDF",
+      hint: "Vous pouvez sélectionner plusieurs fichiers",
+      add: "Ajouter des fichiers",
+      clear: "Tout supprimer",
+      listTitle: "Ordre des fichiers",
+      empty: "Aucun fichier sélectionné.",
+      merge: "Fusionner les PDF",
+      merging: "Fusion des fichiers en cours, veuillez patienter...",
+      privacy: "Votre confidentialité compte : les fichiers sont traités dans votre navigateur, sans être envoyés à notre serveur.",
+      howTitle: "Comment fusionner des PDF",
+      step1: "Sélectionnez au moins deux fichiers PDF.",
+      step2: "Utilisez les flèches pour modifier leur ordre.",
+      step3: "Cliquez sur le bouton pour télécharger le fichier fusionné.",
+      faqTitle: "Le service est-il gratuit et sécurisé ?",
+      faq: "Oui, l'outil est gratuit et fonctionne localement dans votre navigateur. Ne fermez pas la page pendant le traitement des fichiers volumineux.",
+      up: "Monter", down: "Descendre", remove: "Supprimer",
+      added: "Fichiers ajoutés.",
+      badFile: "Un fichier invalide ou non PDF a été ignoré.",
+      needTwo: "Sélectionnez au moins deux fichiers PDF.",
+      failed: "Fusion impossible. Vérifiez que les fichiers PDF sont valides et non protégés par mot de passe.",
+      done: "Fusion réussie. Le téléchargement a commencé.",
+      libraryError: "Impossible de charger la bibliothèque. Vérifiez votre connexion Internet et réessayez.",
+      tooLarge: "Le volume total est trop important pour cette session. Essayez avec moins de fichiers.",
+      filename: "pdf-fusionnes.pdf"
+    }
+  };
+
+  function t(key) { return messages[lang][key] || key; }
+
+  function say(text, error = false) {
+    status.textContent = text;
+    status.classList.toggle("error", error);
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
+
+  function render() {
+    list.replaceChildren();
+    files.forEach((file, index) => {
+      const li = document.createElement("li");
+      li.className = "file-row";
+
+      const name = document.createElement("span");
+      name.className = "file-name";
+      name.textContent = file.name;
+
+      const size = document.createElement("span");
+      size.className = "file-size";
+      size.textContent = formatSize(file.size);
+      name.appendChild(size);
+
+      const up = document.createElement("button");
+      up.type = "button";
+      up.className = "mini";
+      up.textContent = "↑";
+      up.title = t("up");
+      up.setAttribute("aria-label", t("up") + " " + file.name);
+      up.disabled = busy || index === 0;
+      up.onclick = () => {
+        [files[index - 1], files[index]] = [files[index], files[index - 1]];
+        render();
+      };
+
+      const down = document.createElement("button");
+      down.type = "button";
+      down.className = "mini";
+      down.textContent = "↓";
+      down.title = t("down");
+      down.setAttribute("aria-label", t("down") + " " + file.name);
+      down.disabled = busy || index === files.length - 1;
+      down.onclick = () => {
+        [files[index], files[index + 1]] = [files[index + 1], files[index]];
+        render();
+      };
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "mini remove";
+      remove.textContent = "×";
+      remove.title = t("remove");
+      remove.setAttribute("aria-label", t("remove") + " " + file.name);
+      remove.disabled = busy;
+      remove.onclick = () => {
+        files.splice(index, 1);
+        render();
+        say("");
+      };
+
+      li.append(name, up, down, remove);
+      list.appendChild(li);
+    });
+
+    empty.hidden = files.length > 0;
+    mergeBtn.disabled = busy || files.length < 2;
+    $("addBtn").disabled = busy;
+    $("clearBtn").disabled = busy || files.length === 0;
+  }
+
+  function addFiles(selected) {
+    let ignored = false;
+    for (const file of selected) {
+      if (file.type !== "application/pdf" &&
+          !file.name.toLowerCase().endsWith(".pdf")) {
+        ignored = true;
+        continue;
+      }
+      if (file.size === 0) {
+        ignored = true;
+        continue;
+      }
+      files.push(file);
+    }
+    render();
+    say(ignored ? t("badFile") : (selected.length ? t("added") : ""));
+  }
+
+  input.addEventListener("change", () => {
+    addFiles(Array.from(input.files || []));
+    input.value = "";
+  });
+
+  $("addBtn").addEventListener("click", () => input.click());
+
+  $("clearBtn").addEventListener("click", () => {
+    files = [];
+    render();
+    say("");
+  });
+
+  $("langBtn").addEventListener("click", () => {
+    lang = lang === "ar" ? "fr" : "ar";
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.dataset.i18n;
+      el.textContent = t(key);
+    });
+    $("langBtn").textContent = lang === "ar" ? "Français" : "العربية";
+    render();
+    say("");
+  });
+
+  mergeBtn.addEventListener("click", async () => {
+    if (busy) return;
+    if (files.length < 2) {
+      say(t("needTwo"), true);
+      return;
+    }
+    if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+      say(t("libraryError"), true);
+      return;
+    }
+
+    const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+    if (totalBytes > 150 * 1024 * 1024) {
+      say(t("tooLarge"), true);
+      return;
+    }
+
+    busy = true;
+    render();
+    say(t("merging"));
+
+    try {
+      const merged = await PDFLib.PDFDocument.create();
+
+      for (const file of files) {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(bytes, {
+          ignoreEncryption: false
+        });
+        const pages = await merged.copyPages(pdf, pdf.getPageIndices());
+        pages.forEach(page => merged.addPage(page));
+      }
+
+      const output = await merged.save();
+      const blob = new Blob([output], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = t("filename");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      say(t("done"));
+    } catch (error) {
+      console.error("PDF merge error:", error);
+      say(t("failed"), true);
+    } finally {
+      busy = false;
+      render();
+    }
+  });
+
+  $("year").textContent = new Date().getFullYear();
+  render();
+})();
+</script>
+</body>
+</html>
